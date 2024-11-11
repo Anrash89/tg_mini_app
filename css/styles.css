@@ -13,9 +13,6 @@ button {
     font-size: 16px;
 }
 img {
-    max-width: 100%; /* Изображения не будут выходить за пределы контейнера */
-    height: auto; /* Автоматическая высота */
-    display: block;
-    margin: 20px auto; /* Центрирование изображений */
-    border-radius: 8px; /* Скругленные углы */
+    max-width: 100%;
+    height: auto;
 }
