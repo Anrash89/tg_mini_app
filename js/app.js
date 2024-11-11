@@ -4,15 +4,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (window.Telegram && window.Telegram.WebApp) {
         tg = window.Telegram.WebApp;
-        user = tg.initDataUnsafe.user;
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            user = tg.initDataUnsafe.user;
+        }
     } else {
         alert('Это приложение предназначено для запуска внутри Telegram.');
     }
 
-    // Остальной код вашего приложения
     const appDiv = document.getElementById('app');
+    const firstName = user.first_name || 'Пользователь';
     appDiv.innerHTML = `
-        <h1>Здравствуйте, ${user.first_name}!</h1>
+        <h1>Здравствуйте, ${firstName}!</h1>
         <p>Добро пожаловать в тест на определение ваших навыков.</p>
         <button id="startTest">Начать тест</button>
     `;
