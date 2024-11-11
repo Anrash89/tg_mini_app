@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация переменных
     let tg = null;
     let user = { first_name: 'Пользователь' };
+    let currentQuestion = 0;
+    let userScores = {};
 
+    // Инициализация Telegram Web App
     if (window.Telegram && window.Telegram.WebApp) {
         tg = window.Telegram.WebApp;
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -13,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const appDiv = document.getElementById('app');
     const firstName = user.first_name || 'Пользователь';
+
     appDiv.innerHTML = `
         <h1>Здравствуйте, ${firstName}!</h1>
         <p>Добро пожаловать в тест на определение ваших навыков.</p>
@@ -20,10 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
 
     document.getElementById('startTest').addEventListener('click', startTest);
-
-    // Инициализация переменных
-    let currentQuestion = 0;
-    let userScores = {};
 
     // Вопросы теста
    const questions = [
@@ -267,8 +268,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function startTest() {
+        currentQuestion = 0;      // Сброс индекса текущего вопроса
+        userScores = {};          // Сброс результатов
+        showQuestion();           // Показ первого вопроса
+    }
+
+    function showQuestion() {
+        console.log('showQuestion вызвана, currentQuestion:', currentQuestion);
+        console.log('questions.length:', questions.length);
+
+        if (currentQuestion < questions.length) {
+            const q = questions[currentQuestion];
+            let answersHtml = '';
+
+            q.answers.forEach((answer, index) => {
+                answersHtml += `<button class="answerButton" data-index="${index}">${answer}</button><br>`;
+            });
+
+            appDiv.innerHTML = `
+                <h2>Вопрос ${currentQuestion + 1} из ${questions.length}</h2>
+                ${q.image ? `<img src="${q.image}" alt="Изображение вопроса">` : ''}
+                <p>${q.question}</p>
+                ${answersHtml}
+            `;
+
+            document.querySelectorAll('.answerButton').forEach(button => {
+                button.addEventListener('click', selectAnswer);
+            });
+        } else {
+            console.log('Все вопросы пройдены, отображаем результаты');
+            showResults();
+        }
+    }
+
     function selectAnswer(event) {
         const selectedOption = parseInt(event.target.getAttribute('data-index'));
+        console.log('Выбранный вариант:', selectedOption);
+
         const q = questions[currentQuestion];
 
         // Обновление баллов
@@ -296,6 +333,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Функция для отправки результатов боту (опционально)
     function sendResultsToBot() {
-        tg.sendData(JSON.stringify(userScores));
+        if (tg) {
+            tg.sendData(JSON.stringify(userScores));
+        } else {
+            console.warn('Telegram WebApp не инициализирован');
+        }
     }
 });
