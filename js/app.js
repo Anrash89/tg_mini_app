@@ -1,9 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация Telegram Web App
-    const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user;
+    let tg = null;
+    let user = { first_name: 'Пользователь' };
 
-    // Приветствие пользователя
+    if (window.Telegram && window.Telegram.WebApp) {
+        tg = window.Telegram.WebApp;
+        user = tg.initDataUnsafe.user;
+    } else {
+        alert('Это приложение предназначено для запуска внутри Telegram.');
+    }
+
+    // Остальной код вашего приложения
     const appDiv = document.getElementById('app');
     appDiv.innerHTML = `
         <h1>Здравствуйте, ${user.first_name}!</h1>
