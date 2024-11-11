@@ -238,8 +238,10 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     function startTest() {
-        showQuestion();
-    }
+    currentQuestion = 0;      // Сброс индекса текущего вопроса
+    userScores = {};          // Сброс результатов
+    showQuestion();           // Показ первого вопроса
+}
 
     function showQuestion() {
         if (currentQuestion < questions.length) {
